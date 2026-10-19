@@ -45,6 +45,63 @@ enum Gender {
   PREFER_NOT_TO_SAY
 }
 
+enum SkinConcern {
+  ACNE
+  MANCHAS
+  LINHAS_FINAS
+  POROS
+  VERMELHIDAO
+  OLHEIRAS
+  RESSECAMENTO
+}
+
+enum HairConcern {
+  FRIZZ
+  QUEDA
+  CASPA
+  OLEOSIDADE
+  PONTAS_DUPLAS
+  VOLUME
+  QUIMICA
+}
+
+enum IngredientToAvoid {
+  PARABENOS
+  SULFATOS
+  SILICONES
+  ALCOOL
+  FRAGRANCIA
+  OLEO_MINERAL
+}
+
+enum SunExposure {
+  BAIXA
+  MEDIA
+  ALTA
+}
+
+enum ScentPreference {
+  FLORAL
+  AMADEIRADO
+  CITRICO
+  DOCE
+  FRESCO
+  SEM_PREFERENCIA
+}
+
+enum SkinTone {
+  CLARO
+  MEDIO
+  MORENO
+  ESCURO
+}
+
+enum MakeupCoverage {
+  LEVE
+  MEDIA
+  ALTA
+}
+
 enum UserPlan {
   FREE
   PREMIUM
@@ -86,6 +143,17 @@ model UserProfile {
   sensitiveSkin Boolean @default(false)
   veganOnly     Boolean @default(false)
 
+  // Campos premium (todos opcionais). As 3 listas são arrays de enum no Postgres;
+  // os 4 restantes são enum simples opcional. Gating FREE x PREMIUM é feito no front.
+  skinConcerns       SkinConcern[]
+  hairConcerns       HairConcern[]
+  ingredientsToAvoid IngredientToAvoid[]
+
+  sunExposure     SunExposure?
+  scentPreference ScentPreference?
+  skinTone        SkinTone?
+  makeupCoverage  MakeupCoverage?
+
   userId String @unique
 
   user User @relation(fields: [userId], references: [id])
@@ -121,6 +189,10 @@ model Usage {
   questionsUsed Int @default(0)
 
   resetAt DateTime
+
+  // Quando preenchido e no futuro, o usuário está temporariamente bloqueado do
+  // chat por abuso (muitas requisições em pouco tempo). null = sem bloqueio.
+  blockedUntil DateTime?
 
   userId String @unique
 

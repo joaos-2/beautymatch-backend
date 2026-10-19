@@ -52,6 +52,18 @@ export function normalizeTrendTerm(term: unknown): string | null {
     return tokens.join(' ').slice(0, 120).trim()
 }
 
+/**
+ * Preferência de ordenação pedida pelo usuário. Sem pedido explícito, o padrão do
+ * produto é o mais barato — é a proposta do BeautyMatch.
+ */
+export function normalizePricePreference(
+    value: unknown,
+): 'CHEAPEST' | 'PREMIUM' | null {
+    if (value === 'PREMIUM') return 'PREMIUM'
+    if (value === 'CHEAPEST') return 'CHEAPEST'
+    return null
+}
+
 export function normalizeCategory(category: unknown): ProductCategory | null {
     if (typeof category !== 'string') return null
 
